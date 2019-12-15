@@ -6,17 +6,13 @@ on:
 jobs:
   build-android:
     runs-on: ubuntu-latest
+    container: docker://gableroux/unity3d:2018.4.13f1-android
     steps:
     - uses: actions/checkout@v1
-    - uses: docker://gableroux/unity3d:2018.4.13f1-android
-      with:
-        args: |
-          /opt/Unity/Editor/Unity -batchmode -quit -logFile -projectPath $(pwd)/unity-build -buildTarget android -executeMethod BuildPlayer.Build
+    - run: /opt/Unity/Editor/Unity -batchmode -quit -logFile -projectPath $(pwd)/unity-build -buildTarget android -executeMethod BuildPlayer.Build
   build-ios:
     runs-on: ubuntu-latest
+    container: docker://gableroux/unity3d:2018.4.13f1-ios
     steps:
     - uses: actions/checkout@v1
-    - uses: docker://gableroux/unity3d:2018.4.13f1-ios
-      with:
-        args: |
-          /opt/Unity/Editor/Unity -batchmode -quit -logFile -projectPath $(pwd)/unity-build \-buildTarget ios -executeMethod BuildPlayer.Build
+    - run: /opt/Unity/Editor/Unity -batchmode -quit -logFile -projectPath $(pwd)/unity-build \-buildTarget ios -executeMethod BuildPlayer.Build
