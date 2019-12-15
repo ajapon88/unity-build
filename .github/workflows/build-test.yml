@@ -18,7 +18,7 @@ jobs:
                                   -buildTarget android \
                                   -executeMethod BuildPlayer.Build
   build-ios:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - uses: docker://gableroux/unity3d:2018.4.13f1-ios
