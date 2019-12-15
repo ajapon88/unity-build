@@ -11,12 +11,7 @@ jobs:
     - uses: docker://gableroux/unity3d:2018.4.13f1-android
       with:
         args: |
-          /opt/Unity/Editor/Unity -batchmode \
-                                  -quit \
-                                  -logFile \
-                                  -projectPath $(pwd)/unity-build \
-                                  -buildTarget android \
-                                  -executeMethod BuildPlayer.Build
+          /opt/Unity/Editor/Unity -batchmode -quit -logFile -projectPath $(pwd)/unity-build -buildTarget android -executeMethod BuildPlayer.Build
   build-ios:
     runs-on: ubuntu-latest
     steps:
@@ -24,9 +19,4 @@ jobs:
     - uses: docker://gableroux/unity3d:2018.4.13f1-ios
       with:
         args: |
-          /opt/Unity/Editor/Unity -batchmode \
-                                  -quit \
-                                  -logFile \
-                                  -projectPath $(pwd)/unity-build \
-                                  -buildTarget ios \
-                                  -executeMethod BuildPlayer.Build
+          /opt/Unity/Editor/Unity -batchmode -quit -logFile -projectPath $(pwd)/unity-build \-buildTarget ios -executeMethod BuildPlayer.Build
