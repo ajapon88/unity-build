@@ -1,0 +1,30 @@
+name: BuildTest
+
+on:
+  pull_request: null
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: docker://gableroux/unity3d:2018.4.13f1-android
+      run: |
+        /opt/Unity/Editor/Unity -batchmode \
+                                -quit \
+                                -logFile \
+                                -projectPath $(pwd)/unity-build \
+                                -buildTarget android \
+                                -executeMethod BuildPlayer.Build
+  build-ios:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: docker://gableroux/unity3d:2018.4.13f1-ios
+      run: |
+        /opt/Unity/Editor/Unity -batchmode \
+                                -quit \
+                                -logFile \
+                                -projectPath $(pwd)/unity-build \
+                                -buildTarget ios \
+                                -executeMethod BuildPlayer.Build
