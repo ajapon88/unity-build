@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - run: echo "${{ secrets.UNITY_2018_X_ULF_BASE64 }}" | base64 -d > /Unity_v2018.x.ulf
-    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2018.x.ulf
+    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2018.x.ulf || exit 0
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath $(pwd)/unity-build -buildTarget android -executeMethod BuildPlayer.Build
   build-ios:
     runs-on: ubuntu-latest
@@ -18,5 +18,5 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - run: echo "${{ secrets.UNITY_2018_X_ULF_BASE64 }}" | base64 -d > /Unity_v2018.x.ulf
-    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2018.x.ulf
+    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2018.x.ulf || exit 0
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath $(pwd)/unity-build \-buildTarget ios -executeMethod BuildPlayer.Build
