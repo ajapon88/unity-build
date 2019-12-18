@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.Build.Reporting;
 
 public class BuildPlayer
 {
@@ -30,7 +31,6 @@ public class BuildPlayer
         get { return BuildPipeline.GetBuildTargetGroup(BuildTarget); }
     }
 
-    [MenuItem("Project/Build/ActiveBuildTarget")]
     public static void Build()
     {
         new BuildPlayer().Execute();
@@ -56,7 +56,7 @@ public class BuildPlayer
 
     private void Execute()
     {
-        string locationPathName = Path.Combine(Application.dataPath, "../Build/", BuildTarget.ToString());
+        string locationPathName = Path.GetFullPath(Path.Combine(Application.dataPath, "../Build/", BuildTarget.ToString()));
         if (BuildTarget == BuildTarget.Android)
         {
             string extension = EditorUserBuildSettings.buildAppBundle ? ".aab" : ".apk";
@@ -70,6 +70,11 @@ public class BuildPlayer
             scenes = EditorBuildSettings.scenes.Select(x => x.path).ToArray()
         };
 
-        BuildPipeline.BuildPlayer(options);
+        var buildReport = BuildPipeline.BuildPlayer(options);
+        if (buildReport.summary.result != BuildResult.Succeeded)
+        {
+            throw new UnityEditor.Build.BuildFailedException(string.Format("Build Error!!!\nTotalErrors: {0}", buildReport.summary.totalErrors));
+        }
+        Debug.LogFormat("Build Succeeded!!\nOutputPath: {0}", buildReport.summary.outputPath);
     }
 }
