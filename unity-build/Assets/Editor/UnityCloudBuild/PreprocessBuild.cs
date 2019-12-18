@@ -21,10 +21,10 @@ namespace UnityCloudBuild
             Debug.Log("Create UnityCloudBuildManigest");
 
             var manifest = new UnityCloudBuildManifest();
-            manifest.scmCommitId = GetScmCommitId();
-            manifest.scmBranch = GetScmBranch();
+            manifest.scmCommitId = GetEnvironmentVariable("UNITY_SCM_COMMIT_ID", GetScmCommitId());
+            manifest.scmBranch = GetEnvironmentVariable("UNITY_SCM_BRANCH", GetScmBranch());
             manifest.buildNumber = GetEnvironmentVariable("UNITY_BUILD_NUMBER");
-            manifest.buildStartTime = GetEnvironmentVariable("UNITY_BUILD_START_TIME", DateTime.Now.ToString());
+            manifest.buildStartTime = GetEnvironmentVariable("UNITY_BUILD_START_TIME", report.summary.buildStartedAt.ToLocalTime().ToString());
             manifest.projectId = GetEnvironmentVariable("UNITY_PROJECT_ID", CloudProjectSettings.projectId);
             manifest.bundleId = PlayerSettings.applicationIdentifier;
             manifest.unityVersion = UnityEditorInternal.InternalEditorUtility.GetFullUnityVersion();

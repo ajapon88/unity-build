@@ -2,6 +2,9 @@ name: BuildTest
 
 on:
   pull_request: null
+env:
+  UNITY_SCM_COMMIT_ID: ${{ github.sha }}
+  UNITY_SCM_BRANCH: ${{ github.ref }}
 
 jobs:
   build-android:
