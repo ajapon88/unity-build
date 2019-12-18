@@ -53,23 +53,31 @@ namespace UnityCloudBuild
         {
             int exitCode = 0;
             stdout = "";
-            using (var p = new System.Diagnostics.Process())
+            try
             {
-                p.StartInfo.FileName = command;
-                p.StartInfo.Arguments = args;
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.RedirectStandardInput = false;
-                p.StartInfo.CreateNoWindow = true;
-                p.EnableRaisingEvents = true;
+                using (var p = new System.Diagnostics.Process())
+                {
+                    p.StartInfo.FileName = command;
+                    p.StartInfo.Arguments = args;
+                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo.RedirectStandardOutput = true;
+                    p.StartInfo.RedirectStandardInput = false;
+                    p.StartInfo.CreateNoWindow = true;
+                    p.EnableRaisingEvents = true;
 
-                p.Start();
+                    p.Start();
 
-                stdout = p.StandardOutput.ReadToEnd().Trim();
+                    stdout = p.StandardOutput.ReadToEnd().Trim();
 
-                p.WaitForExit();
-                exitCode = p.ExitCode;
-                p.Close();
+                    p.WaitForExit();
+                    exitCode = p.ExitCode;
+                    p.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                exitCode = 128;
             }
             return exitCode;
         }
