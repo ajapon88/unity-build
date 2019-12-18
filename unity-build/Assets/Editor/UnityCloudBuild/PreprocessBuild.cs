@@ -21,10 +21,10 @@ namespace UnityCloudBuild
             Debug.Log("Create UnityCloudBuildManigest");
 
             var manifest = new UnityCloudBuildManifest();
-            manifest.scmCommitId = GetEnvironmentVariable("UNITY_SCM_COMMIT_ID", GetScmCommitId());
-            manifest.scmBranch = GetEnvironmentVariable("UNITY_SCM_BRANCH", GetScmBranch());
+            manifest.scmCommitId = GetEnvironmentVariable("UNITY_SCM_COMMIT_ID") ?? GetScmCommitId();
+            manifest.scmBranch = GetEnvironmentVariable("UNITY_SCM_BRANCH") ?? GetScmBranch();
             manifest.buildNumber = GetEnvironmentVariable("UNITY_BUILD_NUMBER");
-            manifest.buildStartTime = GetEnvironmentVariable("UNITY_BUILD_START_TIME", report.summary.buildStartedAt.ToLocalTime().ToString());
+            manifest.buildStartTime = GetEnvironmentVariable("UNITY_BUILD_START_TIME") ?? report.summary.buildStartedAt.ToLocalTime().ToString("G");
             manifest.projectId = GetEnvironmentVariable("UNITY_PROJECT_ID", CloudProjectSettings.projectId);
             manifest.bundleId = PlayerSettings.applicationIdentifier;
             manifest.unityVersion = UnityEditorInternal.InternalEditorUtility.GetFullUnityVersion();
@@ -43,7 +43,7 @@ namespace UnityCloudBuild
             AssetDatabase.Refresh();
         }
 
-        public string GetEnvironmentVariable(string variable, string defaultValue = null)
+        string GetEnvironmentVariable(string variable, string defaultValue = null)
         {
             var envs = Environment.GetEnvironmentVariables();
             return envs.Contains(variable) ? (string)envs[variable] : defaultValue;
