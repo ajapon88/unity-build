@@ -25,12 +25,18 @@ public class BuildPlayer
         }
     }
 
-    [MenuItem("Project/Build/Player")]
+    private BuildTargetGroup BuildTargetGroup
+    {
+        get { return BuildPipeline.GetBuildTargetGroup(BuildTarget); }
+    }
+
+    [MenuItem("Project/Build/ActiveBuildTarget")]
     public static void Build()
     {
         new BuildPlayer().Execute();
     }
 
+    [MenuItem("Project/Build/iOS")]
     public static void Build_iOS()
     {
         new BuildPlayer()
@@ -39,6 +45,7 @@ public class BuildPlayer
         }.Execute();
     }
 
+    [MenuItem("Project/Build/Android")]
     public static void Build_Android()
     {
         new BuildPlayer()
@@ -49,16 +56,16 @@ public class BuildPlayer
 
     private void Execute()
     {
-        string locationPathName = System.IO.Path.Combine(Application.dataPath, "../Build/", BuildTarget.ToString());
+        string locationPathName = Path.Combine(Application.dataPath, "../Build/", BuildTarget.ToString());
         if (BuildTarget == BuildTarget.Android)
         {
             string extension = EditorUserBuildSettings.buildAppBundle ? ".aab" : ".apk";
-            locationPathName = System.IO.Path.Combine(locationPathName, $"{Application.productName}{extension}");
+            locationPathName = Path.Combine(locationPathName, $"{Application.productName}{extension}");
         }
         var options = new BuildPlayerOptions
         {
             target = BuildTarget,
-            targetGroup = BuildTarget.ToBuildTargetGroup(),
+            targetGroup = BuildTargetGroup,
             locationPathName = locationPathName,
             scenes = EditorBuildSettings.scenes.Select(x => x.path).ToArray()
         };
