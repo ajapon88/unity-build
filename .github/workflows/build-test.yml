@@ -4,7 +4,9 @@ on:
   pull_request: null
 env:
   UNITY_SCM_COMMIT_ID: ${{ github.sha }}
-  UNITY_SCM_BRANCH: ${{ github.ref }}
+  # UNITY_SCM_BRANCH: ${{ github.ref }} # refs/pull/2/merge
+  UNITY_SCM_BRANCH: ${{ github.head_ref }}
+  
 
 jobs:
   build-android:
