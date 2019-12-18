@@ -1,8 +1,8 @@
 name: BuildTest
-
 on:
   pull_request: null
-
+env:
+  cache-version: v1
 jobs:
   build-android:
     runs-on: ubuntu-latest
@@ -14,7 +14,7 @@ jobs:
     - uses: actions/cache@v1
       with:
         path: ${{ github.workspace }}/unity-build/Library
-        key: ${{ runner.os }}-android
+        key: ${{ runner.os }}-android-${{ env.cache-version }}
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath $(pwd)/unity-build -buildTarget android -executeMethod BuildPlayer.Build
   build-ios:
     runs-on: ubuntu-latest
@@ -26,5 +26,5 @@ jobs:
     - uses: actions/cache@v1
       with:
         path: ${{ github.workspace }}/unity-build/Library
-        key: ${{ runner.os }}-ios
+        key: ${{ runner.os }}-ios-${{ env.cache-version }}
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath $(pwd)/unity-build -buildTarget ios -executeMethod BuildPlayer.Build
