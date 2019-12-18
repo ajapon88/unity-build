@@ -13,7 +13,7 @@ jobs:
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2018.x.ulf || exit 0
     - uses: actions/cache@v1
       with:
-        path: unity-build/Library
+        path: ${{ github.workspace }}/unity-build/Library
         key: ${{ runner.os }}-android
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath $(pwd)/unity-build -buildTarget android -executeMethod BuildPlayer.Build
   build-ios:
@@ -25,6 +25,6 @@ jobs:
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2018.x.ulf || exit 0
     - uses: actions/cache@v1
       with:
-        path: unity-build/Library
+        path: ${{ github.workspace }}/unity-build/Library
         key: ${{ runner.os }}-ios
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath $(pwd)/unity-build -buildTarget ios -executeMethod BuildPlayer.Build
