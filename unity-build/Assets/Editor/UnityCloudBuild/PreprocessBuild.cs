@@ -5,28 +5,18 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build;
-#if UNITY_2018_1_OR_NEWER
 using UnityEditor.Build.Reporting;
-#endif
 
 #if !UNITY_CLOUD_BUILD
 namespace UnityCloudBuild
 {
-#if UNITY_2018_1_OR_NEWER
     public class PreprocessBuild : IPreprocessBuildWithReport
-#else
-    public class PreprocessBuild : IPreprocessBuild
-#endif
     {
         public int callbackOrder { get { return 100; } }
 
         public readonly string ManifestPath = "Assets/UnityCloud/Resources/UnityCloudBuildManifest.json.txt";
 
-#if UNITY_2018_1_OR_NEWER
         public void OnPreprocessBuild(BuildReport report)
-#else
-        public void OnPreprocessBuild(BuildTarget target, string path)
-#endif
         {
             Debug.Log("Create UnityCloudBuildManigest");
 
