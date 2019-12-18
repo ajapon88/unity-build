@@ -12,6 +12,8 @@ jobs:
   build-android:
     runs-on: ubuntu-latest
     container: docker://gableroux/unity3d:2018.4.13f1-android
+    env:
+      LANG: ja_JP.UTF-8
     steps:
     - uses: actions/checkout@v1
     - run: echo "${{ secrets.UNITY_2018_X_ULF_BASE64 }}" | base64 -d > /Unity_v2018.x.ulf
@@ -20,6 +22,8 @@ jobs:
   build-ios:
     runs-on: ubuntu-latest
     container: docker://gableroux/unity3d:2018.4.13f1-ios
+    env:
+      LANG: ja_JP.UTF-8
     steps:
     - uses: actions/checkout@v1
     - run: echo "${{ secrets.UNITY_2018_X_ULF_BASE64 }}" | base64 -d > /Unity_v2018.x.ulf
