@@ -58,7 +58,22 @@ namespace UnityCloudBuild
 
         public static bool IsExportManifest()
         {
+            // batchmodeであれば環境変数の設定を見る
+            if (Application.isBatchMode)
+            {
+                var exportEnv = GetEnvironmentVariable("EXPORT_UNITY_CLOUD_BUILD_MANIFEST");
+                if (!string.IsNullOrEmpty(exportEnv))
+                {
+                    return ToBoolean(exportEnv);
+                }
+            }
             return ExportManifestFlag;
+        }
+
+        public static string GetEnvironmentVariable(string variable, string defaultValue = null)
+        {
+            var envs = Environment.GetEnvironmentVariables();
+            return envs.Contains(variable) ? (string)envs[variable] : defaultValue;
         }
     }
 }

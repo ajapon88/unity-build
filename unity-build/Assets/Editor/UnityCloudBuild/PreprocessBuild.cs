@@ -23,15 +23,15 @@ namespace UnityCloudBuild
                 Debug.Log("Create UnityCloudBuildManigest");
 
                 var manifest = new UnityCloudBuildManifest();
-                manifest.scmCommitId = GetEnvironmentVariable("UNITY_SCM_COMMIT_ID") ?? GetScmCommitId();
-                manifest.scmBranch = GetEnvironmentVariable("UNITY_SCM_BRANCH") ?? GetScmBranch();
-                manifest.buildNumber = GetEnvironmentVariable("UNITY_BUILD_NUMBER");
-                manifest.buildStartTime = GetEnvironmentVariable("UNITY_BUILD_START_TIME") ?? report.summary.buildStartedAt.ToLocalTime().ToString("G");
-                manifest.projectId = GetEnvironmentVariable("UNITY_PROJECT_ID", CloudProjectSettings.projectId);
+                manifest.scmCommitId = Config.GetEnvironmentVariable("UNITY_SCM_COMMIT_ID") ?? GetScmCommitId();
+                manifest.scmBranch = Config.GetEnvironmentVariable("UNITY_SCM_BRANCH") ?? GetScmBranch();
+                manifest.buildNumber = Config.GetEnvironmentVariable("UNITY_BUILD_NUMBER");
+                manifest.buildStartTime = Config.GetEnvironmentVariable("UNITY_BUILD_START_TIME") ?? report.summary.buildStartedAt.ToLocalTime().ToString("G");
+                manifest.projectId = Config.GetEnvironmentVariable("UNITY_PROJECT_ID", CloudProjectSettings.projectId);
                 manifest.bundleId = PlayerSettings.applicationIdentifier;
                 manifest.unityVersion = UnityEditorInternal.InternalEditorUtility.GetFullUnityVersion();
                 manifest.xcodeVersion = GetXcodeVersion();
-                manifest.cloudBuildTargetName = GetEnvironmentVariable("UNITY_CLOUD_BUILD_TARGET_NAME"); // default-web/default-ios/default-android
+                manifest.cloudBuildTargetName = Config.GetEnvironmentVariable("UNITY_CLOUD_BUILD_TARGET_NAME"); // default-web/default-ios/default-android
 
                 var json = JsonUtility.ToJson(manifest, true);
                 Debug.LogFormat("UnityCloudBuildManifest\n{0}", json);
@@ -47,12 +47,6 @@ namespace UnityCloudBuild
                 File.Delete(ManifestPath);
             }
             AssetDatabase.Refresh();
-        }
-
-        string GetEnvironmentVariable(string variable, string defaultValue = null)
-        {
-            var envs = Environment.GetEnvironmentVariables();
-            return envs.Contains(variable) ? (string)envs[variable] : defaultValue;
         }
 
         int RunCommand(string command, string args, out string stdout)
