@@ -14,32 +14,38 @@ namespace UnityCloudBuild
     {
         public int callbackOrder { get { return 100; } }
 
-        public readonly string ManifestPath = "Assets/UnityCloud/Resources/UnityCloudBuildManifest.json.txt";
+        public static readonly string ManifestPath = "Assets/UnityCloud/Resources/UnityCloudBuildManifest.json.txt";
 
         public void OnPreprocessBuild(BuildReport report)
         {
-            Debug.Log("Create UnityCloudBuildManigest");
-
-            var manifest = new UnityCloudBuildManifest();
-            manifest.scmCommitId = GetEnvironmentVariable("UNITY_SCM_COMMIT_ID") ?? GetScmCommitId();
-            manifest.scmBranch = GetEnvironmentVariable("UNITY_SCM_BRANCH") ?? GetScmBranch();
-            manifest.buildNumber = GetEnvironmentVariable("UNITY_BUILD_NUMBER");
-            manifest.buildStartTime = GetEnvironmentVariable("UNITY_BUILD_START_TIME") ?? report.summary.buildStartedAt.ToLocalTime().ToString("G");
-            manifest.projectId = GetEnvironmentVariable("UNITY_PROJECT_ID", CloudProjectSettings.projectId);
-            manifest.bundleId = PlayerSettings.applicationIdentifier;
-            manifest.unityVersion = UnityEditorInternal.InternalEditorUtility.GetFullUnityVersion();
-            manifest.xcodeVersion = GetXcodeVersion();
-            manifest.cloudBuildTargetName = GetEnvironmentVariable("UNITY_CLOUD_BUILD_TARGET_NAME"); // default-web/default-ios/default-android
-
-            var json = JsonUtility.ToJson(manifest, true);
-            Debug.LogFormat("UnityCloudBuildManifest\n{0}", json);
-
-            if (!Directory.Exists(Path.GetDirectoryName(ManifestPath)))
+            if (Config.IsExportManifest())
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(ManifestPath));
-            }
-            File.WriteAllText(ManifestPath, json, Encoding.UTF8);
+                Debug.Log("Create UnityCloudBuildManigest");
 
+                var manifest = new UnityCloudBuildManifest();
+                manifest.scmCommitId = GetEnvironmentVariable("UNITY_SCM_COMMIT_ID") ?? GetScmCommitId();
+                manifest.scmBranch = GetEnvironmentVariable("UNITY_SCM_BRANCH") ?? GetScmBranch();
+                manifest.buildNumber = GetEnvironmentVariable("UNITY_BUILD_NUMBER");
+                manifest.buildStartTime = GetEnvironmentVariable("UNITY_BUILD_START_TIME") ?? report.summary.buildStartedAt.ToLocalTime().ToString("G");
+                manifest.projectId = GetEnvironmentVariable("UNITY_PROJECT_ID", CloudProjectSettings.projectId);
+                manifest.bundleId = PlayerSettings.applicationIdentifier;
+                manifest.unityVersion = UnityEditorInternal.InternalEditorUtility.GetFullUnityVersion();
+                manifest.xcodeVersion = GetXcodeVersion();
+                manifest.cloudBuildTargetName = GetEnvironmentVariable("UNITY_CLOUD_BUILD_TARGET_NAME"); // default-web/default-ios/default-android
+
+                var json = JsonUtility.ToJson(manifest, true);
+                Debug.LogFormat("UnityCloudBuildManifest\n{0}", json);
+
+                if (!Directory.Exists(Path.GetDirectoryName(ManifestPath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(ManifestPath));
+                }
+                File.WriteAllText(ManifestPath, json, Encoding.UTF8);
+            }
+            else if (File.Exists(ManifestPath))
+            {
+                File.Delete(ManifestPath);
+            }
             AssetDatabase.Refresh();
         }
 
