@@ -49,7 +49,7 @@ namespace UnityCloudBuild
             AssetDatabase.Refresh();
         }
 
-        int RunCommand(string command, string args, out string stdout)
+        static int RunCommand(string command, string args, out string stdout)
         {
             int exitCode = 0;
             stdout = "";
@@ -82,8 +82,36 @@ namespace UnityCloudBuild
             return exitCode;
         }
 
+        static bool IsCommandExists(string command)
+        {
+            var os = Environment.OSVersion;
+            string checkCommand;
+            switch (os.Platform)
+            {
+                case PlatformID.Win32NT:
+                case PlatformID.Win32S:
+                case PlatformID.Win32Windows:
+                case PlatformID.WinCE:
+                    checkCommand = "where";
+                    break;
+                case PlatformID.Unix:
+                case PlatformID.MacOSX:
+                    checkCommand = "type";
+                    break;
+                default:
+                    Debug.LogWarningFormat("Invalid platform: {0}", os.Platform);
+                    return false;
+            }
+
+            return RunCommand(checkCommand, command, out _) == 0;
+        }
+
         string GetScmCommitId()
         {
+            if (!IsCommandExists("git"))
+            {
+                return "";
+            }
             string stdout;
             var exitCode = RunCommand("git", "rev-parse HEAD", out stdout);
             if (exitCode == 0)
@@ -96,6 +124,10 @@ namespace UnityCloudBuild
 
         string GetScmBranch()
         {
+            if (!IsCommandExists("git"))
+            {
+                return "";
+            }
             string stdout;
             var exitCode = RunCommand("git", "symbolic-ref --short HEAD", out stdout);
             if (exitCode == 0)
@@ -108,6 +140,10 @@ namespace UnityCloudBuild
 
         public string GetXcodeVersion()
         {
+            if (!IsCommandExists("xcodebuild"))
+            {
+                return "";
+            }
             string stdout;
             var exitCode = RunCommand("xcodebuild", "-version", out stdout);
             if (exitCode == 0)
