@@ -37,4 +37,6 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
-
+# UnityCloudBuild
+Assets/UnityCloud/
+Assets/UnityCloud.meta

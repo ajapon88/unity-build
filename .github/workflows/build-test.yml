@@ -3,6 +3,12 @@ name: BuildTest
 on:
   pull_request: null
 
+env:
+  UNITY_SCM_COMMIT_ID: ${{ github.sha }}
+  # UNITY_SCM_BRANCH: ${{ github.ref }} # refs/pull/2/merge
+  UNITY_SCM_BRANCH: ${{ github.head_ref }}
+  TZ: "Asia/Tokyo"  # UnityCloudBuildManifest.buildStartTime
+
 jobs:
   build-android:
     runs-on: ubuntu-latest
