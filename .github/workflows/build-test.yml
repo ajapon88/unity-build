@@ -33,6 +33,8 @@ jobs:
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath $(pwd)/unity-build -buildTarget ios -executeMethod BuildPlayer.Build
     - run: mkdir /artifact && tar cvzfp /artifact/project.tar.gz . # keep permission
       working-directory: unity-build/Build/iOS
+    - run: ls -l /
+    - run: ls -l /artifact
     - uses: actions/upload-artifact@v1
       with:
         name: xcode-project
