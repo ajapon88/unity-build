@@ -20,7 +20,7 @@ jobs:
     - uses: actions/checkout@v1
     - run: echo "${{ secrets.UNITY_2018_X_ULF_BASE64 }}" | base64 -d > /Unity_v2018.x.ulf
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2018.x.ulf || exit 0
-    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath $(pwd)/unity-build -buildTarget android -executeMethod BuildPlayer.Build
+    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath "$(pwd)/unity-build" -buildTarget android -executeMethod BuildPlayer.Build
   build-ios-unity:
     runs-on: ubuntu-latest
     container: docker://gableroux/unity3d:2018.4.13f1-ios
@@ -30,15 +30,12 @@ jobs:
     - uses: actions/checkout@v1
     - run: echo "${{ secrets.UNITY_2018_X_ULF_BASE64 }}" | base64 -d > /Unity_v2018.x.ulf
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2018.x.ulf || exit 0
-    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath $(pwd)/unity-build -buildTarget ios -executeMethod BuildPlayer.Build
-    - run: mkdir /artifact && tar cvzfp /artifact/project.tar.gz . # keep permission
-      working-directory: unity-build/Build/iOS
-    - run: ls -l /
-    - run: ls -l /artifact
+    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath "$(pwd)/unity-build" -buildTarget ios -executeMethod BuildPlayer.Build
+    - run: mkdir artifact && tar -C ./unity-build/Build/iOS cvzfp ./artifact/project.tar.gz . # keep permission
     - uses: actions/upload-artifact@v1
       with:
         name: xcode-project
-        path: /artifact
+        path: ./artifact
   build-ios-xcode:
     runs-on: macos-latest
     needs: [ build-ios-unity ]
