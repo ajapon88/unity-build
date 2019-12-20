@@ -31,12 +31,12 @@ jobs:
     - run: echo "${{ secrets.UNITY_2018_X_ULF_BASE64 }}" | base64 -d > /Unity_v2018.x.ulf
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2018.x.ulf || exit 0
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath $(pwd)/unity-build -buildTarget ios -executeMethod BuildPlayer.Build
-    - run: tar cvzfp "${{ github.workspace }}/project.tar.gz" . # keep permission
+    - run: tar cvzfp /project.tar.gz . # keep permission
       working-directory: unity-build/Build/iOS
     - uses: actions/upload-artifact@v1
       with:
         name: xcode-project
-        path: project.tar.gz
+        path: /project.tar.gz
   build-ios-xcode:
     runs-on: macos-latest
     needs: [ build-ios-unity ]
