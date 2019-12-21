@@ -31,7 +31,7 @@ jobs:
     - run: echo "${{ secrets.UNITY_2018_X_ULF_BASE64 }}" | base64 -d > /Unity_v2018.x.ulf
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2018.x.ulf || exit 0
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath "$(pwd)/unity-build" -buildTarget ios -executeMethod BuildPlayer.Build
-    - run: mkdir artifact && tar cvzf ./artifact/project.tar.gz -C unity-build/Build/iOS/ . # keep permission
+    - run: mkdir artifact && tar cvf ./artifact/project.tar.gz -C unity-build/Build/iOS/ . # keep permission
     - uses: actions/upload-artifact@v1
       with:
         name: xcode-project
@@ -46,6 +46,6 @@ jobs:
       with:
         name: xcode-project
         path: ./artifact
-    - run: mkdir project && tar xvzf ./artifact/project.tar.gz -C ./project
+    - run: mkdir project && tar xvf ./artifact/project.tar.gz -C ./project
     - run: xcodebuild -sdk iphonesimulator -configuration Release build
       working-directory: ./project
