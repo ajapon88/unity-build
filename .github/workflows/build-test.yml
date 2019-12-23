@@ -12,7 +12,7 @@ env:
 
 jobs:
   build-android-unity:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     container: docker://gableroux/unity3d:2018.4.13f1-android
     env:
       UNITY_CLOUD_BUILD_TARGET_NAME: "default-android"
@@ -22,7 +22,7 @@ jobs:
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2018.x.ulf || exit 0
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath "$(pwd)/unity-build" -buildTarget android -executeMethod BuildPlayer.Build
   build-ios-unity:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     container: docker://gableroux/unity3d:2018.4.13f1-ios
     env:
       UNITY_CLOUD_BUILD_TARGET_NAME: "default-ios"
@@ -46,6 +46,7 @@ jobs:
       with:
         name: xcode-project
         path: ./artifact
-    - run: mkdir project && tar -xvf ./artifact/project.tar.gz -C ./project
+    - run: brew install gnu-tar # macデフォルトのtarだと解凍できない
+    - run: mkdir project && gtar -xvf ./artifact/project.tar.gz -C ./project
     - run: xcodebuild -sdk iphonesimulator -configuration Release build
       working-directory: ./project
