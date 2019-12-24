@@ -1,4 +1,5 @@
 name: BuildTest
+
 on:
   pull_request: null
 
@@ -7,30 +8,58 @@ env:
   UNITY_SCM_COMMIT_ID: ${{ github.sha }}
   # UNITY_SCM_BRANCH: ${{ github.ref }} # refs/pull/2/merge
   UNITY_SCM_BRANCH: ${{ github.head_ref }}
+  UNITY_XCODE_VERSION: "11.1"
   TZ: "Asia/Tokyo"  # UnityCloudBuildManifest.buildStartTime
 
 jobs:
-  build-android:
+  build-android-unity:
     runs-on: ubuntu-latest
     container: docker://gableroux/unity3d:2018.4.13f1-android
+    env:
+      UNITY_CLOUD_BUILD_TARGET_NAME: "default-android"
     steps:
     - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
     - run: echo "${{ secrets.UNITY_2018_X_ULF_BASE64 }}" | base64 -d > /Unity_v2018.x.ulf
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2018.x.ulf || exit 0
     - uses: actions/cache@v1
       with:
         path: ${{ github.workspace }}/unity-build/Library
         key: ${{ runner.os }}-android-${{ env.cache-version }}
-    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath $(pwd)/unity-build -buildTarget android -executeMethod BuildPlayer.Build
-  build-ios:
+    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath "$(pwd)/unity-build" -buildTarget android -executeMethod BuildPlayer.Build
+  build-ios-unity:
     runs-on: ubuntu-latest
     container: docker://gableroux/unity3d:2018.4.13f1-ios
+    env:
+      UNITY_CLOUD_BUILD_TARGET_NAME: "default-ios"
     steps:
     - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
     - run: echo "${{ secrets.UNITY_2018_X_ULF_BASE64 }}" | base64 -d > /Unity_v2018.x.ulf
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2018.x.ulf || exit 0
     - uses: actions/cache@v1
       with:
         path: ${{ github.workspace }}/unity-build/Library
         key: ${{ runner.os }}-ios-${{ env.cache-version }}
-    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath $(pwd)/unity-build -buildTarget ios -executeMethod BuildPlayer.Build
+    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath "$(pwd)/unity-build" -buildTarget ios -executeMethod BuildPlayer.Build
+    - run: mkdir artifact && tar -cvzf ./artifact/project.tar.gz -C unity-build/Build/iOS/ . # keep permission
+    - uses: actions/upload-artifact@v1
+      with:
+        name: xcode-project
+        path: ./artifact
+  build-ios-xcode:
+    runs-on: macos-latest
+    needs: [ build-ios-unity ]
+    steps:
+    - run: sudo xcode-select -s '/Applications/Xcode_11.1.app'
+    - run: xcodebuild -version
+    - uses: actions/download-artifact@v1
+      with:
+        name: xcode-project
+        path: ./artifact
+    - run: brew install gnu-tar # macデフォルトのtarだと解凍できない
+    - run: mkdir project && gtar -xvf ./artifact/project.tar.gz -C ./project
+    - run: xcodebuild -sdk iphonesimulator -configuration Release build
+      working-directory: ./project

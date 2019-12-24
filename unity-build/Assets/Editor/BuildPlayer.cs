@@ -26,11 +26,6 @@ public class BuildPlayer
         }
     }
 
-    private BuildTargetGroup BuildTargetGroup
-    {
-        get { return BuildPipeline.GetBuildTargetGroup(BuildTarget); }
-    }
-
     public static void Build()
     {
         new BuildPlayer().Execute();
@@ -65,7 +60,6 @@ public class BuildPlayer
         var options = new BuildPlayerOptions
         {
             target = BuildTarget,
-            targetGroup = BuildTargetGroup,
             locationPathName = locationPathName,
             scenes = EditorBuildSettings.scenes.Select(x => x.path).ToArray()
         };

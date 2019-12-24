@@ -30,7 +30,7 @@ namespace UnityCloudBuild
                 manifest.projectId = Config.GetEnvironmentVariable("UNITY_PROJECT_ID", CloudProjectSettings.projectId);
                 manifest.bundleId = PlayerSettings.applicationIdentifier;
                 manifest.unityVersion = UnityEditorInternal.InternalEditorUtility.GetFullUnityVersion();
-                manifest.xcodeVersion = GetXcodeVersion();
+                manifest.xcodeVersion = Config.GetEnvironmentVariable("UNITY_XCODE_VERSION") ?? GetXcodeVersion();
                 manifest.cloudBuildTargetName = Config.GetEnvironmentVariable("UNITY_CLOUD_BUILD_TARGET_NAME"); // default-web/default-ios/default-android
 
                 var json = JsonUtility.ToJson(manifest, true);
