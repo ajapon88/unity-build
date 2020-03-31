@@ -8,7 +8,7 @@ using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 
 #if !UNITY_CLOUD_BUILD
-namespace UnityCloudBuild
+namespace UnityCloud
 {
     public class PreprocessBuild : IPreprocessBuildWithReport
     {
