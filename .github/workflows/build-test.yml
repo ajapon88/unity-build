@@ -13,7 +13,7 @@ env:
 jobs:
   build-android-unity:
     runs-on: ubuntu-latest
-    container: docker://gableroux/unity3d:2018.4.13f1-android
+    container: docker://gableroux/unity3d:2019.4.12f1-android
     env:
       UNITY_CLOUD_BUILD_TARGET_NAME: "default-android"
     steps:
@@ -25,7 +25,7 @@ jobs:
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath "$(pwd)/unity-build" -buildTarget android -executeMethod BuildPlayer.Build
   build-ios-unity:
     runs-on: ubuntu-latest
-    container: docker://gableroux/unity3d:2018.4.13f1-ios
+    container: docker://gableroux/unity3d:2019.4.12f1-ios
     env:
       UNITY_CLOUD_BUILD_TARGET_NAME: "default-ios"
     steps:
@@ -44,7 +44,7 @@ jobs:
     runs-on: macos-latest
     needs: [ build-ios-unity ]
     steps:
-    - run: sudo xcode-select -s '/Applications/Xcode_11.1.app'
+    - run: xcode-select -s '/Applications/Xcode_12.1.app'
     - run: xcodebuild -version
     - uses: actions/download-artifact@v1
       with:
