@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using UnityEditor;
-using UnityEngine;
 using UnityEditor.Build.Reporting;
+using UnityEngine;
 
 public class BuildPlayer
 {
@@ -52,10 +50,19 @@ public class BuildPlayer
     private void Execute()
     {
         string locationPathName = Path.GetFullPath(Path.Combine(Application.dataPath, "../Build/", BuildTarget.ToString()));
-        if (BuildTarget == BuildTarget.Android)
+        bool isBuildTest = System.Environment.GetCommandLineArgs().Any(arg => arg == "-buildTest");
+        switch (BuildTarget)
         {
-            string extension = EditorUserBuildSettings.buildAppBundle ? ".aab" : ".apk";
-            locationPathName = Path.Combine(locationPathName, $"{Application.productName}{extension}");
+            case BuildTarget.Android:
+                string extension = EditorUserBuildSettings.buildAppBundle ? ".aab" : ".apk";
+                locationPathName = Path.Combine(locationPathName, $"{Application.productName}{extension}");
+                break;
+            case BuildTarget.iOS:
+                if (isBuildTest)
+                {
+                    PlayerSettings.iOS.sdkVersion = iOSSdkVersion.SimulatorSDK;
+                }
+                break;
         }
         var options = new BuildPlayerOptions
         {
