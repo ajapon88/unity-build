@@ -36,13 +36,13 @@ jobs:
     - uses: actions/checkout@v1
       with:
         fetch-depth: 1
-
     - run: echo "${{ secrets.UNITY_2019_X_ULF_BASE64 }}" | base64 -d > /Unity_v2019.x.ulf
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2019.x.ulf || exit 0
     - uses: actions/cache@v1
       with:
         path: ${{ github.workspace }}/unity-build/Library
-        key: ${{ runner.os }}-ios-${{ env.cache-version }}    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath "$(pwd)/unity-build" -buildTarget ios -buildTest -executeMethod BuildPlayer.Build
+        key: ${{ runner.os }}-ios-${{ env.cache-version }}
+    - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath "$(pwd)/unity-build" -buildTarget ios -buildTest -executeMethod BuildPlayer.Build
     - run: mkdir artifact && tar -cvzf ./artifact/project.tar.gz -C unity-build/Build/iOS/ . # keep permission
     - uses: actions/upload-artifact@v1
       with:
