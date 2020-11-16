@@ -73,4 +73,8 @@ Temporary Items
 .nfs*
 
 # Unity linsece file
-secrets/*.ulf
+*.alf
+*.ulf
+
+# github actions act secrets
+*.secrets

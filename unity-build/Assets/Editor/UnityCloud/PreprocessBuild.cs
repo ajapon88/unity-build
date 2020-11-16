@@ -2,13 +2,14 @@
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Linq;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 
 #if !UNITY_CLOUD_BUILD
-namespace UnityCloudBuild
+namespace UnityCloud
 {
     public class PreprocessBuild : IPreprocessBuildWithReport
     {
@@ -18,7 +19,18 @@ namespace UnityCloudBuild
 
         public void OnPreprocessBuild(BuildReport report)
         {
-            if (Config.IsExportManifest())
+            bool isExportManifest = Config.IsExportManifest();
+            if (Application.isBatchMode)
+            {
+                if (System.Environment.GetCommandLineArgs().Any(arg => arg == "-no-export-unity-cloud-build-manifest"))
+                {
+                    isExportManifest = false;
+                }
+            }
+#if NO_EXPORT_UNITY_CLOUD_BUILD_MANIFEST
+            isExportManifest = false;
+#endif
+            if (isExportManifest)
             {
                 Debug.Log("Create UnityCloudBuildManigest");
 

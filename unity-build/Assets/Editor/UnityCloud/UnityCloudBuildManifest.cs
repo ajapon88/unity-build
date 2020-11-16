@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UnityCloudBuild
+namespace UnityCloud
 {
     [System.Serializable]
     public class UnityCloudBuildManifest

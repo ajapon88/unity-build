@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace UnityCloudBuild
+namespace UnityCloud
 {
     public static class Config
     {
