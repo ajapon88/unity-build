@@ -4,6 +4,7 @@ on:
   pull_request: null
 
 env:
+  cache-version: v1
   UNITY_SCM_COMMIT_ID: ${{ github.sha }}
   UNITY_SCM_BRANCH: ${{ github.head_ref }}
   UNITY_XCODE_VERSION: "12.2"
@@ -21,6 +22,10 @@ jobs:
         fetch-depth: 1
     - run: echo "${{ secrets.UNITY_2019_X_ULF_BASE64 }}" | base64 -d > /Unity_v2019.x.ulf
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2019.x.ulf || exit 0
+    - uses: actions/cache@v1
+      with:
+        path: ${{ github.workspace }}/unity-build/Library
+        key: ${{ runner.os }}-android-${{ env.cache-version }}
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath "$(pwd)/unity-build" -buildTarget android -buildTest -executeMethod BuildPlayer.Build
   build-ios-unity:
     runs-on: ubuntu-latest
@@ -33,6 +38,10 @@ jobs:
         fetch-depth: 1
     - run: echo "${{ secrets.UNITY_2019_X_ULF_BASE64 }}" | base64 -d > /Unity_v2019.x.ulf
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile /Unity_v2019.x.ulf || exit 0
+    - uses: actions/cache@v1
+      with:
+        path: ${{ github.workspace }}/unity-build/Library
+        key: ${{ runner.os }}-ios-${{ env.cache-version }}
     - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath "$(pwd)/unity-build" -buildTarget ios -buildTest -executeMethod BuildPlayer.Build
     - run: mkdir artifact && tar -cvzf ./artifact/project.tar.gz -C unity-build/Build/iOS/ . # keep permission
     - uses: actions/upload-artifact@v1
