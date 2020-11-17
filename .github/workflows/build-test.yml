@@ -1,7 +1,8 @@
 name: BuildTest
 
 on:
-  pull_request: null
+  pull_request:
+  workflow_dispatch:
 
 env:
   cache-version: v1
